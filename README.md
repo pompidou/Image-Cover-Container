@@ -10,7 +10,7 @@ Usage
 
 *	The image container has to be positioned relatively or absolutely.
 *	The image needs a data attribute containing its aspect ratio.
-#	If you want the image to transition the change pass true to the plugin function.
+*	If you want the image to transition the change pass true to the plugin function.
 
 ### HTML
 
