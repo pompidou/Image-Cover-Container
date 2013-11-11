@@ -22,25 +22,37 @@
  **/
 
 
+
 (function($) {
+
 
 
 	$.fn.imageCoverContainer = function(transition) {
 
 
+
+		'use strict';
+
+
+
+		// variable declaration
 		var $imgs 						= $(this);
+		var $window;
+		var transition;
+		var isFirstOnResizeExecution;
+
 
 
 		if ($imgs.exists()) { // only run if there are images
 
 
-			// variables
-			var $window 					= $(window);
-			var transition 					= transition; 
+			// assign variable values
+			$window 					= $(window);
+			transition 					= transition; 
 			if (transition === undefined) {
-				var transition 				= false; // set parameter default
+				transition 				= false; // set parameter default
 			}
-			var isFirstOnResizeExecution 	= true;
+			isFirstOnResizeExecution 	= true;
 
 
 			// initiate
@@ -60,78 +72,88 @@
 			});
 
 
-			// executes on resive event
-			function onResize() {
+		}
 
-				// console.log('resize event'); // throttle test
 
-				if (transition) {
-					if (isFirstOnResizeExecution) {
-						isFirstOnResizeExecution = false;
-						$imgs.css('transition', 'all .5s ease-in-out');
-					}
+
+		// called on resive event
+		function onResize() {
+
+			// console.log('resize event'); // throttle test
+
+			if (transition) {
+				if (isFirstOnResizeExecution) {
+					isFirstOnResizeExecution = false;
+					$imgs.css('transition', 'all .5s ease-in-out');
 				}
-
-				cover();
-
 			}
 
-
-			// the magic
-			function cover() {
-
-				$imgs.each(function() {
-
-					var $img 			= $(this);
-					var $imgContainer 	= $img.parent();
-
-					var ratio 			= $img.data('ratio');
-					var containerWidth 	= $imgContainer.width();
-					var containerHeight = $imgContainer.height();
-
-					var newImgWidth;
-					var newImgHeight;
-					var newImgPositionTop;
-					var newImgPositionLeft;
-
-					// scale
-					if ((containerHeight / containerWidth) > ratio) {
-						newImgWidth 	= (containerHeight / ratio);
-						newImgHeight 	= containerHeight;
-					}
-					else {
-						newImgWidth 	= containerWidth;
-						newImgHeight 	= (containerWidth * ratio);
-					}
-
-					// center
-					newImgPositionTop 	= (containerHeight - newImgHeight) / 2;
-					newImgPositionLeft	= (containerWidth - newImgWidth) / 2;
-
-					// assign new values
-					$img.css(
-						{
-							width 	: newImgWidth,
-							height 	: newImgHeight,
-							top 	: newImgPositionTop,
-							left 	: newImgPositionLeft
-						}
-					);
-
-				});
-
-			}
-
+			cover();
 
 		}
 
 
+
+		// the magic
+		function cover() {
+
+			$imgs.each(function() {
+
+				var $img 			= $(this);
+				var $imgContainer 	= $img.parent();
+
+				var ratio 			= $img.data('ratio');
+				var containerWidth 	= $imgContainer.width();
+				var containerHeight = $imgContainer.height();
+
+				var newImgWidth;
+				var newImgHeight;
+				var newImgPositionTop;
+				var newImgPositionLeft;
+
+				// scale
+				if ((containerHeight / containerWidth) > ratio) {
+					newImgWidth 	= (containerHeight / ratio);
+					newImgHeight 	= containerHeight;
+				}
+				else {
+					newImgWidth 	= containerWidth;
+					newImgHeight 	= (containerWidth * ratio);
+				}
+
+				// center
+				newImgPositionTop 	= (containerHeight - newImgHeight) / 2;
+				newImgPositionLeft	= (containerWidth - newImgWidth) / 2;
+
+				// assign new values
+				$img.css(
+					{
+						width 	: newImgWidth,
+						height 	: newImgHeight,
+						top 	: newImgPositionTop,
+						left 	: newImgPositionLeft
+					}
+				);
+
+			});
+
+		}
+
+
+
+		return this; // return the jQuery object the function has been called upon -> make it chainable
+
+
+
 	}
 
 
+
+	// small plugin function to test whether jQuery selector matched
 	$.fn.exists = function () {
 		return this.length !== 0;
 	}
+
 
 
 })(jQuery);
