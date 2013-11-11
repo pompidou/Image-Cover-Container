@@ -2,7 +2,7 @@
  *	
  *	AUTHOR: 		Frank Frick
  *	DATE: 			1.11.2013
- *	VERSION: 		1.0
+ *	VERSION: 		1.1
  *	DESCRIPTION: 	jQuery Plugin which makes all selected images fill their container
  *					and respect their aspect ratio. (like the css property background-size: cover;)
  *	
