@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<!--
+  Made with love.
+  © 2014 by Frank Frick, Zürich.
+-->
+<html class="no-js" lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>foreground-size.js demo</title>
+
+		<style>
+			/* Demo styles */
+			.image {
+				position: absolute;
+				right: 20%;
+				left: 20%;
+				border: 1px solid blue;
+			}
+			.image:first-of-type {
+				top: 10%;
+				bottom: 55%;
+			}
+			.image:last-of-type {
+				top: 55%;
+				bottom: 10%;
+			}
+		</style>
+	</head>
+	<body>
+
+
+
+
+
+		<div class="image image--cover" data-ratio="1.5">
+			<img src="./frog.jpg">
+		</div>
+
+		<div class="image image--contain" data-ratio="1.5">
+			<img src="./frog.jpg">
+		</div>
+
+
+
+
+
+		<!-- SCRIPTS -->
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script src="../foreground-size.js"></script>
+		<script>
+			$(document).ready(function($) {
+				FgSize.create({
+					elements: $('.image--cover'),
+					sizing: 'cover'
+				});
+				FgSize.create({
+					elements: $('.image--contain'),
+					sizing: 'contain'
+				});
+
+				// demo image update
+				setTimeout(function() {
+					$('.image--cover').data('ratio', 700/375);
+					$('.image--cover img').attr('src', './css.jpg');
+					FgSize.update($('.image--cover'));
+				}, 5000);
+				setTimeout(function() {
+					$('.image--contain img').attr('src', './css.jpg');
+					FgSize.update($('.image--contain'));
+				}, 10000);
+			}(jQuery));
+		</script>
+
+
+
+
+
+	</body>
+</html>
