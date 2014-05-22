@@ -3,7 +3,7 @@
  *	AUTHOR:			Frank Frick
  *	CREATED DATE:	20.05.2014
  *	UPDATED DATE:	20.05.2014
- *	VERSION:		0.1
+ *	VERSION:		0.2
  *	DESCRIPTION:	A small jQuery plugin which resizes an image/element inside
  *					its parent element with CSS background-size or manually via calculation.
  *					It respects the elements aspect ratio. (the latter approach needs
@@ -89,6 +89,10 @@
 				var pos;
 				isBgSizingUsed = false;
 				ratio = $container.data('ratio');
+
+				if (ratio === undefined) {
+					console.log('foreground-size.js: missing data-ratio attribute');
+				}
 
 				if (s.addRequiredCssWithJs) {
 					pos = $container.css('position');
