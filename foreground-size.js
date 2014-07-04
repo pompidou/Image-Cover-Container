@@ -2,8 +2,8 @@
  *	NAME:			foreground-size.js
  *	AUTHOR:			Frank Frick
  *	CREATED DATE:	20.05.2014
- *	UPDATED DATE:	20.05.2014
- *	VERSION:		0.2
+ *	UPDATED DATE:	04.06.2014
+ *	VERSION:		0.3
  *	DESCRIPTION:	A small jQuery plugin which resizes an image/element inside
  *					its parent element with CSS background-size or manually via calculation.
  *					It respects the elements aspect ratio. (the latter approach needs
@@ -33,7 +33,7 @@
 		var defaultSettings = {
 			elements:				undefined,
 			childSelector:			'img',
-			sizing:					'cover', // or 'contain'
+			sizing:					'cover', // or 'contain' / 'containX' / 'containY'
 			// hasTransition:			false,
 			useCssBgSize:			true,
 			bgSizeSupported:		('backgroundSize' in document.documentElement.style),
@@ -69,6 +69,7 @@
 			var attachBg = function() {
 				var $img = $child;
 				var imgSrc = $img.attr('src');
+				var backgroundSizeValue;
 				isBgSizingUsed = true;
 
 				if (s.addRequiredCssWithJs) {
@@ -78,10 +79,31 @@
 					});
 				}
 
+				switch (s.sizing) {
+					case 'contain':
+						backgroundSizeValue = s.sizing;
+						break;
+
+					case 'containX':
+						backgroundSizeValue = '100% auto';
+						break;
+
+					case 'containY':
+						backgroundSizeValue = 'auto 100%';
+						break;
+
+					case 'cover':
+						backgroundSizeValue = s.sizing;
+						break;
+
+					default:
+						throw 'foreground-size.js: Invalid sizing property.';
+				}
+
 				$img.css('display', 'none');
 				$el.css({
 					backgroundImage:	'url(' + imgSrc + ')',
-					backgroundSize:		s.sizing
+					backgroundSize:		backgroundSizeValue
 				});
 			};
 
@@ -91,16 +113,20 @@
 				ratio = $container.data('ratio');
 
 				if (ratio === undefined) {
-					console.log('foreground-size.js: missing data-ratio attribute');
+					console.log('foreground-size.js: Missing data-ratio attribute.');
 				}
 
 				if (s.addRequiredCssWithJs) {
 					pos = $container.css('position');
 					$container.css('overflow', 'hidden');
-					if (pos !== 'fixed' && pos !== 'absolute') {
+					if (pos !== 'fixed' && pos !== 'absolute' && pos !== 'relative') {
 						$container.css('position', 'relative');
 					}
-					$child.css('position', 'absolute');
+					$child.css({
+						'position': 'absolute',
+						'max-width': 'none',
+						'max-height': 'none'
+					});
 				}
 
 				calcSize();
@@ -127,21 +153,35 @@
 					childH = containerH;
 				};
 
-				if (s.sizing === 'contain') {
-					if ((containerW / containerH) < ratio) {
+				switch (s.sizing) {
+					case 'contain':
+						if ((containerW / containerH) < ratio) {
+							levelWidth();
+						}
+						else {
+							levelHeight();
+						}
+						break;
+
+					case 'containX':
 						levelWidth();
-					}
-					else {
+						break;
+
+					case 'containY':
 						levelHeight();
-					}
-				}
-				else { // cover
-					if ((containerW / containerH) < ratio) {
-						levelHeight();
-					}
-					else {
-						levelWidth();
-					}
+						break;
+
+					case 'cover':
+						if ((containerW / containerH) < ratio) {
+							levelHeight();
+						}
+						else {
+							levelWidth();
+						}
+						break;
+
+					default:
+						throw 'foreground-size.js: Invalid sizing property.';
 				}
 
 				// center
