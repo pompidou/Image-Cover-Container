@@ -2,8 +2,8 @@
  *	NAME:			foreground-size.js
  *	AUTHOR:			Frank Frick
  *	CREATED DATE:	20.05.2014
- *	UPDATED DATE:	04.06.2014
- *	VERSION:		0.3
+ *	UPDATED DATE:	14.07.2014
+ *	VERSION:		0.4
  *	DESCRIPTION:	A small jQuery plugin which resizes an image/element inside
  *					its parent element with CSS background-size or manually via calculation.
  *					It respects the elements aspect ratio. (the latter approach needs
@@ -49,6 +49,8 @@
 			var $child;
 			var ratio;
 			var isBgSizingUsed;
+			var isTerminated		= false;
+
 
 			var init = function() {
 				findChild();
@@ -200,7 +202,11 @@
 			};
 
 			var doOnResize = function() {
-				calcSize();
+				// Prevent code of being executed after plugin instance is stopped.
+				// Because the resize event is delayed an thus acts asynchronously.
+				if (!isTerminated) {
+					calcSize();
+				}
 			};
 
 			var findChild = function() {
@@ -222,10 +228,12 @@
 			};
 
 			var terminate = function() {
+				isTerminated = true;
 				$window.off('resize.fgSize');
 				$container.attr('style', '');
 				$child.attr('style', '');
 			};
+
 
 			return {
 				init: init,
